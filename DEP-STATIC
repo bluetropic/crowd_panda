@@ -1,0 +1,10 @@
+from __future__ import unicode_literals, print_function, division
+
+STATIC_DEPENDENCIES = {
+    'crowd_sorcery.feature.issue': ['crowd_sorcery.feature.material'],
+    'crowd_sorcery.feature.material': [],
+    'crowd_sorcery.feature.task': [],
+    'crowd_sorcery.feature.operator': [],
+    'crowd_sorcery.feature.gear': [],
+    'crowd_sorcery.feature.review': ['crowd_sorcery.feature.task', 'crowd_sorcery.feature.material'],
+}

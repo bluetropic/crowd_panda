@@ -1,0 +1,211 @@
+<style>
+    .hotspot {
+        position: absolute;
+        background-color: #87cefa;
+        opacity: 0.5;
+        cursor: pointer;
+    }
+    .hotspot.editing {
+        display: none;
+    }
+    .task-material-widget .set-link {
+        position: absolute;
+        display: none;
+        z-index: 999;
+    }
+</style>
+<link rel="stylesheet" href="{{ static_url('jquery.imgareaselect/css/imgareaselect-default.css') }}"/>
+<div style="position: relative;">
+    <div id="timer" data-timer="{{ task.max_material_process_interval.seconds }}">{{ task.max_material_process_interval.seconds }}</div>
+    <div class="col-md-3">
+        <div class="well" style="min-height: 550px;">
+            <h3>Hints</h3>
+            <ul id="task-hint">
+                <li>Zoom in/out until the PDF page size is suitable for identifying the Figures. </li>
+                <li>Double click the PDF pages or click the "Cutout" button.</li>
+                <li>Click the left top of the Figure and draw to its right bottom.</li>
+                <li>Adjusting until the current Figure is exactly embraced by the rectangle.</li>
+            </ul>
+
+            <a href="javascript:;" style="font-weight: bold;margin-top: 100px;display: block;">Click here to see the Tutorial.</a>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div id="buttons" style="margin-bottom: 10px;">
+            <button class="prev btn btn-default btn-lg">Previous</button>
+            <button class="next btn btn-default btn-lg">Next</button>
+            <button class="btn btn-success btn-lg" type="submit">Submit</button>
+        </div>
+        <div id="task-show-widget" data-submit-url="/tasks/{{ task.id }}/results">
+            {% for material in not_finished_materials %}
+                <form class="task-material-widget clearfix" style="position:relative;display: none;" data-material-id="{{ material.id }}">
+                    <div class="material">
+                        <div class="set-link">
+                            <div class="input-group">
+                                <input class="link-input form-control" type="text" placeholder="please input area info"/>
+                                <span class="input-group-btn">
+                                    <button class="set-link-action btn btn-info">Save</button>
+                                </span>
+                            </div>
+                        </div>
+                        <img src="{{ material.url }}" style="max-width: 100%"/>
+                    </div>
+                </form>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<script src="{{ static_url('jquery.imgareaselect/jquery.imgareaselect.min.js') }}"></script>
+<script>
+    $(document).ready(function () {
+        veil.widget.initializers.push(function () {
+            var widget = $('#task-show-widget');
+            if ($('.task-material-widget').length) {
+                $('.task-material-widget:first').addClass('current').fadeIn();
+            } else {
+                widget.append('<p>There is no more tasks. <a class="refresh-link" href="/tasks!task">Go back</a></p>');
+            }
+
+            var id = setInterval(function () {
+                var $timer = $('#timer');
+                var current = parseInt($timer.data('timer'));
+                current--;
+                if (current <= 0) {
+                    clearInterval(id);
+                }
+                $timer.data('timer', current);
+                $timer.html(current >= 10 ? current : '0' + current);
+            }, 1000);
+        });
+        veil.widget.initializers.push(initImgAreaSelect);
+
+        veil.widget.handle('#buttons', '.next', 'click', function (widget, e) {
+            var $current = $('.task-material-widget.current');
+            var $next = $current.next('.task-material-widget');
+            if ($next.length) {
+                ias.cancelSelection();
+                $current.find('.set-link').fadeOut();
+                $current.find('.hotspot.editing').removeClass('.editing');
+                $current.removeClass('current').fadeOut();
+                $next.addClass('current').fadeIn();
+                initImgAreaSelect();
+            }
+        });
+
+        veil.widget.handle('#buttons', '.prev', 'click', function (widget, e) {
+            var $current = $('.task-material-widget.current');
+            var $prev = $current.prev('.task-material-widget');
+            if ($prev.length) {
+                ias.cancelSelection();
+                $current.find('.set-link').fadeOut();
+                $current.find('.hotspot.editing').removeClass('.editing');
+                $current.removeClass('current').fadeOut();
+                $prev.addClass('current').fadeIn();
+                initImgAreaSelect();
+            }
+        });
+
+        veil.widget.handle('#buttons', '[type=submit]', 'click', function (widget, e) {
+            e.preventDefault();
+            var data = [];
+            $('.task-material-widget').each(function () {
+                var hotspots = [];
+                $(this).find('.hotspot:not(.editing)').each(function () {
+                    hotspots.push(getHotspotAttributes($(this)));
+                });
+                data.push({material_id: $(this).data('materialId'), hotspots: hotspots});
+            });
+            if(data.length < $('.task-material-widget').length) {
+                if (!confirm('Do you want to submit even there are some non-processed materials?')) {
+                    return;
+                }
+            }
+            veil.resource.create({
+                url: $('#task-show-widget').data('submitUrl'),
+                data: {data: data},
+                dataType: 'json',
+                dataFormat: 'json',
+                onSuccess: function () {
+                    window.location.href = '/';
+                }
+            });
+        });
+
+        veil.widget.handle('.task-material-widget.current', '.set-link-action', 'click', function (widget, e) {
+            e.preventDefault();
+            var $hotspot = widget.find('.hotspot.editing');
+            $hotspot.removeClass('editing');
+            var $linkInput = widget.find('.link-input');
+            $hotspot.data('link', $linkInput.val());
+            $hotspot.find('.link-to').text('Value is: ' + $linkInput.val());
+            $linkInput.val('');
+            widget.find('.set-link').fadeOut();
+            ias.cancelSelection();
+        });
+        veil.widget.handle('.task-material-widget.current', '.hotspot', 'click', function (widget, e) {
+            var attributes = getHotspotAttributes($(this));
+            ias.setSelection(attributes.left, attributes.top, attributes.left + attributes.width, attributes.top + attributes.height, true);
+            widget.find('.link-input').val(attributes.link);
+            widget.find('.set-link').css({
+                left: attributes.left,
+                top: attributes.top - 40
+            }).fadeIn();
+            ias.setOptions({show: true});
+            ias.update();
+            $(this).addClass('editing');
+        });
+
+        initImgAreaSelect();
+        var ias = null;
+        function initImgAreaSelect() {
+            var $widget = $('.task-material-widget.current');
+            ias = $('.task-material-widget.current img').imgAreaSelect({
+                instance: true,
+                handles: true,
+                minWidth: 50,
+                minHeight: 50,
+                onSelectStart: function () {
+                    if (0 == $widget.find('.hotspot.editing').length) {
+                        $widget.append('<div class="hotspot editing"><span class="link-to"></span></div>');
+                    }
+                },
+                onSelectChange: function (img, selection) {
+                    if (0 == selection.width) {
+                        return;
+                    }
+                    if (0 == selection.height) {
+                        return;
+                    }
+                    var $hotspot = $widget.find('.hotspot.editing');
+                    $widget.find('.set-link').fadeOut();
+                    $hotspot.css({
+                        left: selection.x1 + 'px',
+                        top: selection.y1 + 'px',
+                        width: selection.width + 'px',
+                        height: selection.height + 'px'
+                    });
+                },
+                onSelectEnd: function (img, selection) {
+                    if (selection.width === 0 || selection.height === 0) {
+                        $widget.find('.set-link').fadeOut();
+                        return;
+                    }
+                    $widget.find('.set-link').css({
+                        left: selection.x1 + 'px',
+                        top: selection.y1 - 35 + 'px'
+                    }).fadeIn();
+                }
+            });
+        }
+
+        function getHotspotAttributes($hotspot) {
+            return {
+                left: parseInt($hotspot.css('left').replace('px', '')),
+                top: parseInt($hotspot.css('top').replace('px', '')),
+                width: parseInt($hotspot.css('width').replace('px', '')),
+                height: parseInt($hotspot.css('height').replace('px', '')),
+                link: $hotspot.data('link')
+            }
+        }
+    });
+</script>

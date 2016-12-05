@@ -1,0 +1,26 @@
+{% if materials %}
+    <div id="list-issue-materials-widget" class="well clearfix" data-refresh-url="/issues/{{ issue.id }}/materials">
+        <h3>Last 10 uploaded files for {{ issue.title }}</h3>
+        {% for material in materials %}
+            <div class="uploaded-image-wrap pull-left">
+                <i class="glyphicon glyphicon-remove-sign remove-image use-tooltip" title="Delete"
+                   data-delete-url="/issues/{{ issue.id }}/materials/{{ material.id }}"></i>
+                <img class="uploaded-images" src="{{ material.url }}" width="150px"/>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="well">
+        <h2>There is no uploaded files.</h2>
+    </div>
+{% endif %}
+<div class="well">
+    <h3>Available material categories</h3>
+    {{ widgets.list_material_categories(issue.id) }}
+</div>
+<script src="{{ static_url('jquery.elevateZoom-3.0.8.min.js') }}"></script>
+<script>
+    $(document).ready(function () {
+
+    });
+</script>

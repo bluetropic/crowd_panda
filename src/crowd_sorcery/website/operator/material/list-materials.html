@@ -1,0 +1,8 @@
+<div class="well">
+    <h3>Materials in {{ category }}</h3>
+    <div>
+        {% for material in materials %}
+            <img src="{{ material.url }}" width="100px"/>
+        {% endfor %}
+    </div>
+</div>

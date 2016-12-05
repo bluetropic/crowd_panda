@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=UTF-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CrowdSorcery管理后台</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ static_url('bootstrap-3.3.4-dist/css/bootstrap.min.css') }}"/>
+</head>
+<body style="padding-top: 70px">
+<style>
+    #main-navi {
+        font-size: 1.4em;
+        margin-top: 10px;
+    }
+
+    #main-navi li.active {
+        font-weight: bold;
+    }
+
+    legend {
+        margin-bottom: 8px;
+    }
+
+    legend + * {
+        -webkit-margin-top-collapse: separate;
+        margin-top: 8px;
+    }
+
+    #backtop {
+        width: 25px;
+        height: 40px;
+        cursor: pointer;
+        position: fixed;
+        right: 1px;
+        bottom: 50px;
+    }
+
+    .promotion-type-tag {
+        background: #E5004F;
+        color: #fff;
+        font-style: normal;
+        font-weight: bold;
+        padding: 3px;
+    }
+</style>
+<div class="container">
+    {% block main %}
+    {% endblock %}
+</div>
+<script src="{{ static_url('jquery-2.1.3.min.js') }}" data-keep="true"></script>
+<script src="{{ static_url('js.cookie-2.0.4.min.js') }}" data-keep="true"></script>
+<script src="{{ static_url('bootstrap-3.3.4-dist/js/bootstrap.min.js') }}" data-keep="true"></script>
+<script src="{{ static_url('veil.js') }}" data-keep="true"></script>
+<script type="text/javascript" data-keep="true">
+    $(document).ready(function () {
+        var navis = $('#main-navi li');
+        navis.removeClass('active');
+        navis.each(function () {
+            var navi_href = $(this).find('a').attr('href');
+            if (window.location.pathname.indexOf(navi_href) == 0) {
+                $(this).addClass('active');
+            }
+        });
+        $(document).on('click', '#backtop', function () {
+            window.location.href = '#';
+        });
+        veil.widget.initializers.push(initToolTip);
+        initToolTip();
+        function initToolTip() {
+            $('.use-tooltip').tooltip();
+            $('.use-tooltip').hover(function () {
+                $('.tooltip-inner').css({'font-weight': 'bold', 'font-size': '11px'});
+            });
+        }
+    });
+</script>
+</body>
+</html>

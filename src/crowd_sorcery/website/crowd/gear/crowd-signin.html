@@ -1,0 +1,32 @@
+{% extends 'master:crowd-website-without-navi-layout.html' %}
+{% block main %}
+<h3 class="col-lg-offset-4 col-lg-4">Signin</h3>
+<form id="crowd-signin-widget" class="form-horizontal col-lg-offset-4 col-lg-4" action="/sessions" method="POST">
+    <div class="form-group">
+        <div class="col-lg-9">
+            <input class="form-control" type="text" name="username" placeholder="Username"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-9">
+            <input class="form-control" type="password" name="password" placeholder="Password"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-9">
+            <button class="btn btn-success pull-right" type="submit">Singin</button>
+            <a class="btn btn-link pull-right refresh-link" href="/" style="margin-right: 10px">Cancel</a>
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function () {
+        veil.widget.handle('#crowd-signin-widget', '[type=submit]', 'click', function (widget, e) {
+            e.preventDefault();
+            veil.widget.createResource(widget, function () {
+                window.location.href = '/';
+            });
+        });
+    })
+</script>
+{% endblock %}

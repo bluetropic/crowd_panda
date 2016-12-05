@@ -1,0 +1,33 @@
+<h3>Update Issue</h3>
+<form id="update-issue-widget" class="form-horizontal" action="/issues/{{ issue.id }}" method="POST">
+    <div class="form-group">
+        <label class="control-label col-md-2">Title</label>
+        <div class="col-md-4">
+            <input id="title" class="form-control" type="text" name="title" value="{{ issue.title }}" placeholder="Title"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2">Description</label>
+        <div class="col-md-4">
+            <textarea class="form-control" rows="5" name="description" placeholder="Description" style="resize: vertical;">{{ issue.description }}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-4">
+            <button class="btn btn-success" type="submit">Update</button>
+            <a class="btn btn-link refresh-link" href="/issues!issue" style="margin-right: 10px">Cancel</a>
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function () {
+        veil.widget.handle('#update-issue-widget', '[type=submit]', 'click', function (widget, e) {
+            e.preventDefault();
+            veil.widget.updateResource(widget, function () {
+                window.refreshContainer('/issues!issue', function () {
+                    window.displayAlert('success', 'Update issue successfully!');
+                });
+            }, undefined, 'json', 'json');
+        });
+    });
+</script>

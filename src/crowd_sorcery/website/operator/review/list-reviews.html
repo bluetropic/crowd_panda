@@ -1,0 +1,60 @@
+<div id="waiting-for-operator-review-widget" class="well" data-refresh-url="/reviews">
+    {% if waiting_for_operator_reviews %}
+        <table class="table table-bordered">
+            <caption>Waiting for operator review</caption>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Gear Name</th>
+                <th>Material</th>
+                <th>Data(JSON format)</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for review in waiting_for_operator_reviews %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ review.gear_name }}</td>
+                    <td>
+                        <a href="" data-url="{{ review.url }}">Click to Review</a>
+                    </td>
+                    <td>{{ review.result |json }}</td>
+                    <td>
+                        <button class="right btn btn-success" data-task-result-id="{{ review.id }}">Right</button>
+                        <button class="wrong btn btn-danger" data-task-result-id="{{ review.id }}">Wrong</button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="help-block">There is no reviews waiting for operator.</p>
+    {% endif %}
+</div>
+<script>
+    $(document).ready(function () {
+        veil.widget.handle('#waiting-for-operator-review-widget', '.right', 'click', function (widget, e) {
+            e.preventDefault();
+            updateTaskResultStatus(widget, $(this).data('taskResultId'), true);
+        });
+        veil.widget.handle('#waiting-for-operator-review-widget', '.wrong', 'click', function (widget, e) {
+            e.preventDefault();
+            updateTaskResultStatus(widget, $(this).data('taskResultId'), false);
+        });
+
+        function updateTaskResultStatus(widget, taskResultId, accept) {
+            veil.resource.update({
+                url: '/task-results/' + taskResultId + '/status',
+                dataFormat: 'json',
+                dataType: 'json',
+                data: {
+                    accept: accept
+                },
+                onSuccess: function () {
+                    veil.widget.refresh(widget);
+                }
+            });
+        }
+    });
+</script>

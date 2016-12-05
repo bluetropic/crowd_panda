@@ -1,0 +1,26 @@
+<div class="alert alert-info">
+    Your current credit balance is : {{ gear.credit }}
+</div>
+{% if gear_credit_logs %}
+<table class="table table-bordered">
+    <caption>Credit logs</caption>
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Datetime</th>
+        <th>Credit</th>
+        <th>Comment</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for log in gear_credit_logs %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ log.accumulated_at |datetime }}</td>
+            <td>{{ log.credit }}</td>
+            <td>{{ log.comment }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}

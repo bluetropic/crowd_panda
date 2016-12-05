@@ -1,0 +1,73 @@
+<style>
+    .hotspot {
+        position: absolute;
+        background-color: #87cefa;
+        opacity: 0.5;
+        cursor: pointer;
+    }
+    .hotspot-value {
+        color: red;
+        font-size: 20px;
+        font-weight: bold;
+    }
+</style>
+<div id="review-show-widget">
+    <h1>Task: {{ task.title }}</h1>
+    {% for material in not_reviewed_materials %}
+        <form class="review-task-material-widget clearfix" action="/tasks/{{ task.id }}/review-results" method="POST" style="position:relative;display: none;">
+            <input type="hidden" name="result_id" value="{{ material.result_id }}"/>
+            <input type="hidden" name="accept"/>
+            <span class="label label-info pull-right">Review before {{ material.expired_at |datetime }}</span>
+            <span class="pull-right" style="margin-right: 10px">{{ loop.index }} / {{ loop.length }}</span>
+            <div class="material col-lg-9" style="padding-left:0;">
+                <img src="{{ material.url }}" style="max-width: 100%"/>
+            </div>
+            {% if material.result %}
+                {% for r in material.result %}
+                    <div class="hotspot use-tooltip" style="left: {{ r.left }}px;top: {{ r.top }}px;width: {{ r.width }}px;height: {{ r.height }}px;" title="VALUE: {{ r.link }}" data-placement="right">
+                        <span class="hotspot-value">{{ r.link }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="col-lg-3">
+                <p>{{ task.description }}</p>
+                <button class="right btn btn-success pull-right">Right</button>
+                <button class="wrong btn btn-danger pull-right" style="margin-right: 30px">Wrong</button>
+            </div>
+        </form>
+    {% endfor %}
+</div>
+<script>
+    $(document).ready(function () {
+        function init() {
+            display();
+        }
+
+        veil.widget.initializers.push(init);
+
+        veil.widget.handle('.review-task-material-widget', '.right', 'click', function (widget, e) {
+            e.preventDefault();
+            widget.find('[name=accept]').val('true');
+            submit(widget);
+        });
+        veil.widget.handle('.review-task-material-widget', '.wrong', 'click', function (widget, e) {
+            e.preventDefault();
+            widget.find('[name=accept]').val('false');
+            submit(widget);
+        });
+
+        function submit(widget) {
+            veil.widget.createResource(widget, function () {
+                widget.remove();
+                display();
+            });
+        }
+        function display() {
+            if ($('.review-task-material-widget:first').length) {
+                $('.review-task-material-widget:first').addClass('current').fadeIn();
+            } else {
+                $('#review-show-widget').append('<p>There is no more tasks. <a class="refresh-link" href="/tasks!task">Go back</a></p>');
+            }
+        }
+    });
+</script>

@@ -1,0 +1,31 @@
+<style>
+    .category {
+        margin: 10px 0;
+    }
+</style>
+<ul id="categories">
+    {% for category in categories %}
+        <li class="category">
+            {{ category.category }}
+            <a href="/materials/{{ category.category }}/images" class="refresh-link btn btn-info">View</a>
+            {% if category.chosen %}
+                <button class="choose-material btn btn-success" data-choose-url="/issues/{{ issue_id }}/materials/{{ category.category }}/choose" disabled>Chosen</button>
+            {% else %}
+                <button class="choose-material btn btn-success" data-choose-url="/issues/{{ issue_id }}/materials/{{ category.category }}/choose">Choose</button>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+<script>
+    $(document).ready(function () {
+        veil.widget.handle('#categories', '.choose-material', 'click', function (widget, e) {
+            e.preventDefault();
+            veil.resource.create({
+                url: $(this).data('chooseUrl'),
+                onSuccess: function () {
+                    window.location.reload();
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,36 @@
+from __future__ import unicode_literals, print_function, division
+
+STATIC_FILE_DEPENDENCIES = {
+    'crowd': {
+        'js': [
+            {
+                'output': 'crowd.js',
+                'files': [
+                ]
+            }
+        ],
+        'css': [
+            {
+                'output': 'crowd.css',
+                'files': [
+                ]
+            }
+        ],
+    },
+    'operator': {
+        'js': [
+            {
+                'output': 'operator.js',
+                'files': [
+                ]
+            }
+        ],
+        'css': [
+            {
+                'output': 'operator.css',
+                'files': [
+                ]
+            }
+        ]
+    }
+}

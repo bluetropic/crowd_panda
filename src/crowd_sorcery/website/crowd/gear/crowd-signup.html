@@ -1,0 +1,45 @@
+<h3 class="col-lg-offset-4 col-lg-4">Signup</h3>
+<form id="crowd-signup-widget" class="form-horizontal col-lg-offset-4 col-lg-4" action="/gears" method="POST">
+    <div class="form-group">
+        <div class="col-lg-9">
+            <input class="form-control" type="text" name="name" placeholder="Name"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-9">
+            <input class="form-control" type="text" name="email" placeholder="E-mail"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-9">
+            <input class="form-control" type="text" name="username" placeholder="Username"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-9">
+            <input class="form-control" type="password" name="password" placeholder="Password"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-9">
+            <input class="form-control" type="password" name="password_confirm" placeholder="Password"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-9">
+            <button class="btn btn-success pull-right" type="submit">Singup</button>
+            <a class="btn btn-link pull-right refresh-link" href="/" style="margin-right: 10px">Cancel</a>
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function () {
+        veil.widget.handle('#crowd-signup-widget', '[type=submit]', 'click', function (widget, e) {
+            e.preventDefault();
+            veil.widget.createResource(widget, function () {
+                window.displayAlert('success', 'Signup successfully, waiting for our further process');
+                window.location.href = '/';
+            });
+        });
+    })
+</script>

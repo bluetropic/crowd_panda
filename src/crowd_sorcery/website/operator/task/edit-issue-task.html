@@ -1,0 +1,52 @@
+<h3>Update Task</h3>
+<form id="update-issue-task-widget" class="form-horizontal" action="/issues/{{ task.issue_id }}/tasks/{{ task.id }}" method="POST">
+    <div class="form-group">
+        <label class="control-label col-md-2">Title</label>
+        <div class="col-md-8">
+            <input id="title" class="form-control" type="text" name="title" value="{{ task.title }}" placeholder="Title"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2">Description</label>
+        <div class="col-lg-9">
+            <textarea class="form-control" rows="5" name="description" placeholder="Description" style="resize: vertical;">{{ task.description }}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2">Max materials one gear</label>
+        <div class=" col-md-3">
+            <input class="form-control" name="max_material_for_each_gear" value="{{ task.max_material_for_each_gear }}" placeholder="max material count for each user"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2">Max material process seconds</label>
+        <div class="col-md-3">
+            <input class="form-control" name="max_material_process_interval" value="{{ task.max_material_process_interval.seconds }}" placeholder="each material process seconds"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2">Credits for one material</label>
+        <div class="col-md-3">
+            <input class="form-control" name="credit_for_each_material" value="{{ task.credit_for_each_material }}" placeholder="each material credit for user"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-5">
+            <button class="btn btn-success" type="submit" data-success-url="/issues/{{ task.issue_id }}/tasks!issue">Update</button>
+            <a class="btn btn-link refresh-link" href="/issues/{{ task.issue_id }}/tasks!issue" style="margin-right: 10px">Cancel</a>
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function(){
+        veil.widget.handle('#update-issue-task-widget', '[type=submit]', 'click', function (widget, e) {
+            e.preventDefault();
+            var successUrl = $(this).data('successUrl');
+            veil.widget.updateResource(widget, function () {
+                window.refreshContainer(successUrl, function () {
+                    window.displayAlert('success', 'Update task successfully!');
+                });
+            }, undefined, 'json', 'json');
+        })
+    });
+</script>

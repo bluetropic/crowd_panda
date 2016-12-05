@@ -1,0 +1,29 @@
+<h1 class="module-title"><i class="glyphicon glyphicon-tasks"></i> Tasks for {{ issue.title }} <a class="btn btn-link refresh-link" href="/issues/{{ issue.id }}/tasks/new!issue">Add Task</a></h1>
+{% if tasks %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>No.</th>
+            <th>Title & Description</th>
+            <th>Operations</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for task in tasks %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>
+                    <ul id="task-info-list">
+                        <li class="task-title">{{ task.title }}</li>
+                        <li class="task-description">{{ task.description }}</li>
+                    </ul>
+                </td>
+                <td>
+                    <a class="btn btn-link refresh-link" href="/issues/{{ issue.id }}/tasks/{{ task.id }}/edit!issue">Edit</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+{% endif %}

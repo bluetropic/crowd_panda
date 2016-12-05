@@ -1,0 +1,32 @@
+<h1 class="module-title">Issues <a class="btn btn-link refresh-link" href="/issues/new!issue">Create Issue</a></h1>
+{% if issues %}
+<table class="table">
+    <thead>
+    <tr>
+        <th>No</th>
+        <th style="width: 50%">Title & Description</th>
+        <th>Operations</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for issue in issues %}
+        <tr>
+            <td>{{ issue.id }}</td>
+            <td>
+                <ul id="issue-info-list">
+                    <li class="issue-title">{{ issue.title }}</li>
+                    <li class="issue-description">{{ issue.description }}</li>
+                </ul>
+            </td>
+            <td>
+                <a class="btn btn-link refresh-link" href="/issues/{{ issue.id }}/edit!issue">Edit</a>
+                <a class="btn btn-link refresh-link" href="/issues/{{ issue.id }}/tasks!issue">View Tasks</a>
+                <a class="btn btn-link refresh-link" href="/issues/{{ issue.id }}/materials!issue">Choose Materials</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p>No issues now. <a class="btn btn-link refresh-link" href="/issues/new!issue">Create</a></p>
+{% endif %}

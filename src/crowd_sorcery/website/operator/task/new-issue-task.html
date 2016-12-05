@@ -1,0 +1,47 @@
+<h3 class="col-lg-offset-4 col-lg-5">Add Task</h3>
+<form id="create-issue-task-widget" class="form-horizontal col-lg-offset-4 col-lg-5" action="/issues/{{ issue_id }}/tasks" method="POST">
+    <div class="form-group">
+        <div class="col-lg-9">
+            <input id="title" class="form-control" type="text" name="title" placeholder="Title"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-9">
+            <textarea class="form-control" rows="5" name="description" placeholder="Description" style="resize: vertical;"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-9">
+            <input class="form-control" name="max_material_for_each_gear" placeholder="max material count for each user"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-9">
+            <input class="form-control" name="max_material_process_interval" placeholder="each material process seconds"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-9">
+            <input class="form-control" name="credit_for_each_material" placeholder="each material credit for user"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-9">
+            <button class="btn btn-success pull-right" type="submit" data-success-url="/issues/{{ issue_id }}/tasks!issue">Add</button>
+            <a class="btn btn-link pull-right refresh-link" href="/issues/{{ issue_id }}/tasks!issue" style="margin-right: 10px">Cancel</a>
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function(){
+        veil.widget.handle('#create-issue-task-widget', '[type=submit]', 'click', function (widget, e) {
+            e.preventDefault();
+            var successUrl = $(this).data('successUrl');
+            veil.widget.createResource(widget, function () {
+                window.refreshContainer(successUrl, function () {
+                    window.displayAlert('success', 'Add task successfully!');
+                });
+            }, undefined, 'json', 'json');
+        })
+    });
+</script>

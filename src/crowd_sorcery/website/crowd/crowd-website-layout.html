@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=UTF-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CrowdSorcery - {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ static_url('bootstrap-3.3.4-dist/css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ static_url('crowd-main.css') }}"/>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a id="logo" href="#" style="background-image: url({{ static_url('logo.png') }});"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="nav" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li id="nav-task" class="nav-item"><a href="/tasks"></a></li>
+                <li class="nav-item"><a style="font-weight: bold;color: #FFF;">Crowd-PANDA: Using Crowdsourcing Method for Academic Knowledge Acquisition</a></li>
+            </ul>
+            {{ widgets.crowd_user_info() }}
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container-fluid -->
+</nav>
+<div id="container" class="container">
+    {% block main %}
+    {% endblock %}
+</div>
+<script src="{{ static_url('jquery-2.1.3.min.js') }}" data-keep="true"></script>
+<script src="{{ static_url('js.cookie-2.0.4.min.js') }}" data-keep="true"></script>
+<script src="{{ static_url('bootstrap-3.3.4-dist/js/bootstrap.min.js') }}" data-keep="true"></script>
+<script src="{{ static_url('veil.js') }}" data-keep="true"></script>
+<script type="text/javascript" data-keep="true">
+    $(document).ready(function () {
+        veil.widget.handle('#nav', '.nav-item', 'click', function (widget, e) {
+            e.preventDefault();
+            $('#nav').find('li.active').removeClass('active');
+            $(this).addClass('active');
+            window.location.hash = $(this).find('a').attr('href') + '!' + $(this).attr('id').replace('nav-', '');
+            veil.widget.get($(this).find('a').attr('href'), function (html) {
+                $('#container').html(html);
+                cleanup();
+            });
+        });
+        veil.widget.handle('', '.refresh-link', 'click', function (_, e) {
+            e.preventDefault();
+            var hash = $(this).attr('href');
+            var parts = hash.split('!');
+            var link = parts[0];
+            window.location.hash = hash;
+            veil.widget.get(link, function (html) {
+                $('#container').html(html);
+                cleanup();
+            });
+        });
+        window.refreshContainer = function (hash, onSuccess) {
+            var parts = hash.split('!');
+            var link = parts[0].replace('#', '');
+            veil.widget.get(link, function (html) {
+                $('#container').html(html);
+                window.location.hash = hash;
+                if (onSuccess) {
+                    onSuccess();
+                    cleanup();
+                }
+            });
+        };
+        window.onhashchange = function(){
+            var hashParts = window.location.hash.split('!');
+            var navPart = hashParts.length > 1 ? hashParts[1] : undefined;
+            if (navPart) {
+                var navItem = $('#nav-' + navPart);
+                if (navItem.length) {
+                    $('.nav-item.active').removeClass('active');
+                    navItem.addClass('active');
+                }
+            }
+            var linkPart = hashParts.length > 0 ? hashParts[0] : undefined;
+            if (linkPart) {
+                window.refreshContainer(window.location.hash);
+            } else {
+                $('.nav-item:first').click();
+            }
+        };
+        var hashParts = window.location.hash.split('!');
+        var navPart = hashParts.length>1 ? hashParts[1] : undefined;
+        if (navPart) {
+            var navItem = $('#nav-' + navPart);
+            if (navItem.length) {
+                $('.nav-item.active').removeClass('active');
+                navItem.addClass('active');
+            }
+        }
+        var linkPart = hashParts.length>0 ? hashParts[0] : undefined;
+        if (linkPart) {
+            window.refreshContainer(window.location.hash);
+        } else {
+            $('.nav-item:first').click();
+        }
+
+        veil.widget.initializers.push(initToolTip);
+        initToolTip();
+        function initToolTip() {
+            $('.use-tooltip').tooltip();
+            $('.use-tooltip').hover(function () {
+                $('.tooltip-inner').css({'font-weight': 'bold', 'font-size': '11px'});
+            });
+        }
+
+        window.displayAlert = function (type, text) {
+            $('body').prepend('<div id="alert" class="alert alert-' + type + ' col-lg-5 pull-right">' + text + '</div>');
+            setTimeout(function () {
+                $('#alert').fadeOut().remove();
+            }, 3000);
+        };
+        function cleanup(){
+            $('.zoomContainer').remove();
+        }
+    });
+</script>
+</body>
+</html>

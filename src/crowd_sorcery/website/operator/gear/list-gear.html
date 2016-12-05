@@ -1,0 +1,43 @@
+<h1 class="module-title"><i class="glyphicon glyphicon-cog"></i> Gears</h1>
+{% if not_activated_gears %}
+    <table id="list-not-activated-gears-widget" class="table">
+        <caption>Not activated gears</caption>
+        <thead>
+        <tr>
+            <th>No.</th>
+            <th>Name</th>
+            <th>E-mail</th>
+            <th>Username</th>
+            <th>Operations</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for gear in not_activated_gears %}
+            <tr>
+                <td>{{ gear.id }}</td>
+                <td>{{ gear.name }}</td>
+                <td>{{ gear.email }}</td>
+                <td>{{ gear.username }}</td>
+                <td>
+                    <button class="btn btn-link activate-gear" data-activate-url="/gears/{{ gear.id }}/activation">Activate</button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <script>
+        $(document).ready(function () {
+            veil.widget.handle('#list-not-activated-gears-widget', '.activate-gear', 'click', function (widget, e) {
+                e.preventDefault();
+                veil.resource.create({
+                    url: $(this).data('activateUrl'),
+                    onSuccess: function () {
+                        window.refreshContainer('/gears!gear')
+                    }
+                });
+            });
+        });
+    </script>
+{% else %}
+    There is no unactivated gears.
+{% endif %}
