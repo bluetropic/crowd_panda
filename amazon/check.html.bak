@@ -1,0 +1,78 @@
+<!-- This file needs to be hosted on an external server.  -->
+<html>
+<script language="Javascript">
+//
+// This method Gets URL Parameters (GUP)
+//
+function gup( name )
+{
+  var regexS = "[\\?&]"+name+"=([^&#]*)";
+  var regex = new RegExp( regexS );
+  var tmpURL = window.location.href;
+  var results = regex.exec( tmpURL );
+  if( results == null )
+    return "";
+  else
+    return results[1];
+}
+
+//
+// This method decodes the query parameters that were URL-encoded
+//
+function decode(strToDecode)
+{
+  var encoded = strToDecode;
+  return unescape(encoded.replace(/\+/g,  " "));
+}
+
+</script>
+    <style>
+
+    </style>
+<body>
+
+<div>
+            <h1>How many Figures in the PDF page? </h1>
+            <ul>
+			<li> Figure is a kind of information objects in a PDF page that most of which are titled with "Figures" or "Fig."</li>
+                <li>1.scroling the page down when viewing the PDF Page.</li>
+				<li>2.click the right choice below the PDF page.</li>
+
+            </ul>
+</div>
+<div align="center" style="background-color:#333333">
+<img id="image" width="70%"> </img>
+</div>
+
+<form id="mturk_form" method="POST" action="https://workersandbox.mturk.com/mturk/externalSubmit">
+<input type="hidden" id="assignmentId" name="assignmentId" value="">
+<p>
+<input type="radio" name="category" value="0">&nbsp;No, there is no Figure. <br>
+<input type="radio" name="category" value="1">&nbsp;Yes, only one.<br>
+<input type="radio" name="category" value="2">&nbsp;Yes, two Figures.<br>
+<input type="radio" name="category" value="3" selected>&nbsp;More than two Figures in this PDF pages<br>
+<p>
+<input id="submit" type="submit" name="Submit" value="Submit">
+
+</form>
+<script language="Javascript">
+    document.getElementById('image').src = decode(gup('imageFileName'));
+    document.getElementById('assignmentId').value = gup('assignmentId');
+    //
+    // Check if the worker is PREVIEWING the HIT or if they've ACCEPTED the HIT
+    //
+    if (gup('assignmentId') == "ASSIGNMENT_ID_NOT_AVAILABLE")
+    {
+  // If we're previewing, disable the button and give it a helpful message
+  document.getElementById('submit').disabled = true;
+  document.getElementById('submit').value = "You must ACCEPT the HIT before you can submit the results by Clicking this button.";
+    } else {
+        var form = document.getElementById('mturk_form');
+        if (document.referrer && ( document.referrer.indexOf('workersandbox') != -1) ) {
+            form.action = "https://workersandbox.mturk.com/mturk/externalSubmit";
+        }
+    }
+
+</script>
+</body>
+</html>
