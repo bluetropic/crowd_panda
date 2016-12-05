@@ -1,0 +1,88 @@
+.hint-text {
+    color: #666;
+}
+
+.nav-item > a {
+    outline: 0;
+}
+
+.navbar-nav>li>a {
+    color: #FFFFFF!important;
+}
+.navbar-nav>.active>a {
+    background-color: transparent!important;
+}
+
+nav {
+    background-color: #3A4C3E!important;
+}
+
+#alert {
+    position: absolute;
+    right: 10px;
+    top: 60px;
+    width: 300px;
+}
+.alert {
+    margin-bottom: 0;
+}
+
+
+/* issue */
+#issue-info-list {
+    padding-left: 0;
+    list-style-type: none;
+}
+#issue-info-list .issue-description {
+    color: #888;
+}
+/* task */
+#task-info-list {
+    padding-left: 0;
+    list-style-type: none;
+}
+#task-info-list .task-description {
+    color: #888;
+}
+
+.uploaded-image-wrap {
+    position:relative;
+    margin-right: 20px;
+    border: 10px solid #ffffff;
+    border-radius: 8px;
+}
+.remove-image {
+    position: absolute;
+    top: -17px;
+    right: -17px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+#logo {
+    width: 141px;
+    height: 132px;
+    position: absolute;
+    top: 5px;
+}
+
+#nav {
+    padding-left: 160px;
+}
+
+#buttons button {
+    margin-right: 20px;
+}
+
+.task-material-widget {
+    background-color: #656565;
+}
+#timer {
+    position: absolute;
+    right: 20px;
+    font-size: 36px;
+    color: red;
+    padding: 0 10px;
+    border: 1px solid #CCC;
+    background-color: #DEDEDE;
+}

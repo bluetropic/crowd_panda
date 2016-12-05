@@ -1,7 +1,8 @@
 # 操作系统 #
 
     Ubuntu 14.04.2
-
+    用户名： dejavu
+    密码：p@55word
 
 # APT源 #
 
